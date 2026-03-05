@@ -25,42 +25,6 @@ void NormalizeToSigma(TH1* h, double sigma_pb)
     if (I <= 0.0) return;
     h->Scale(sigma_pb / I);
 }
-
-// =====================================================================
-// Legenda automatica
-    TLegend* SmartLeg(TH1* a, TH1* b=nullptr, TH1* c=nullptr, TH1* d=nullptr, TH1* e=nullptr,
-                  bool logy=true, double ts=0.03)
-{
-  std::vector<TH1*> H={a,b,c,d,e}; H.erase(std::remove(H.begin(),H.end(),nullptr),H.end());
-  if(H.empty()) return new TLegend(0.60,0.70,0.88,0.88);
-
-  auto score=[&](double x1,double y1,double x2,double y2){
-    double xmin=H[0]->GetXaxis()->GetXmin(), xmax=H[0]->GetXaxis()->GetXmax();
-    double X1=xmin+x1*(xmax-xmin), X2=xmin+x2*(xmax-xmin);
-    double ymin=1e300,ymax=0; for(auto h:H){ ymin=std::min(ymin,h->GetMinimum(1e-12)); ymax=std::max(ymax,h->GetMaximum()); }
-    if(logy){ if(ymin<=0) ymin=1e-6; double l1=log10(ymin), l2=log10(ymax);
-      double Y1=pow(10,l1+y1*(l2-l1)), Y2=pow(10,l1+y2*(l2-l1));
-      double s=0; for(auto h:H){ int i1=h->GetXaxis()->FindBin(X1), i2=h->GetXaxis()->FindBin(X2);
-        for(int i=i1;i<=i2;i++){ double v=h->GetBinContent(i); if(v>0 && v>=Y1 && v<=Y2) s++; } }
-      return s;
-    } else {
-      double Y1=ymin+y1*(ymax-ymin), Y2=ymin+y2*(ymax-ymin);
-      double s=0; for(auto h:H){ int i1=h->GetXaxis()->FindBin(X1), i2=h->GetXaxis()->FindBin(X2);
-        for(int i=i1;i<=i2;i++){ double v=h->GetBinContent(i); if(v>=Y1 && v<=Y2) s++; } }
-      return s;
-    }
-  };
-
-  double box[4][4]={{0.15,0.70,0.45,0.88},{0.55,0.70,0.88,0.88},{0.15,0.15,0.45,0.33},{0.55,0.15,0.88,0.33}};
-  int best=0; double bs=score(box[0][0],box[0][1],box[0][2],box[0][3]);
-  for(int i=1;i<4;i++){ double s=score(box[i][0],box[i][1],box[i][2],box[i][3]); if(s<bs){bs=s; best=i;} }
-
-  auto *L=new TLegend(box[best][0],box[best][1],box[best][2],box[best][3]);
-  L->SetBorderSize(0); L->SetFillStyle(0); L->SetTextFont(42); L->SetTextSize(ts);
-  return L;
-}   
-// =====================================================================
-
 // =====================================================================
 // MACRO PRINCIPAL
 // =====================================================================
@@ -188,15 +152,10 @@ void plot_ttbar_overlay()
     pad2->SetBottomMargin(0.15);
     pad2->SetTopMargin(0.08);
 
-    padLeg->SetLeftMargin(0.00);
-    padLeg->SetRightMargin(0.00);
-    padLeg->SetTopMargin(0.05);
-    padLeg->SetBottomMargin(0.05);
-
     pad1->Draw();
     pad2->Draw();
     padLeg->Draw();
-
+  
     // =================================================================
     // PAINEL 1 — η  (dσ/dη)
     // =================================================================
@@ -232,81 +191,24 @@ void plot_ttbar_overlay()
     hEta_BH6_p->Draw("HIST SAME");
     hEta_BHX_p->Draw("HIST SAME");
 
-
-
-    // =================================================================
-    // PAINEL 2 — pT  (dσ/dpT)
-    // =================================================================
+  
+   // =================================================================
+   // PAINEL 2 — pT  (dσ/dpT)
+   // =================================================================
     pad2->cd();
     gPad->SetLogy();
-
-    hPt_LO_p->SetTitle(";p_{T} [GeV];d#sigma/dp_{T} [pb/GeV]");
-    hPt_LO_p->GetXaxis()->CenterTitle(true);
-    hPt_LO_p->GetYaxis()->CenterTitle(true);
-    hPt_LO_p->GetYaxis()->SetTitleOffset(1.7);
-
-    hPt_LO_p->SetLineColor(kBlack);
-    hPt_LO_p->SetLineWidth(4);
-    hPt_LO_p->SetLineStyle(1);
-
-    hPt_NLO_p->SetLineColor(kGray+1);
-    hPt_NLO_p->SetLineWidth(4);
-    hPt_NLO_p->SetLineStyle(2);
-
-    hPt_LO_p->Draw("HIST");
-    hPt_NLO_p->Draw("HIST SAME");
-
-    hPt_BH4_p->Draw("HIST SAME");
-    hPt_BH6_p->Draw("HIST SAME");
-    hPt_BHX_p->Draw("HIST SAME");
-
-    padLeg->cd();
-    padLeg->SetFillColor(0);
-    padLeg->SetFrameFillColor(0);
-
-
-    // Legenda centralizada no rodapé
-    TLegend* leg = new TLegend(0.10,0.15,0.90,0.85);
-    leg->SetBorderSize(0);
-    leg->SetFillStyle(0);
-    leg->SetTextFont(42);
-    leg->SetNColumns(2);
-    leg->SetTextSize(0.15);
-
-    leg->AddEntry(hEta_LO_p,  "pp #rightarrow t#bar{t} LO (pQCD)",  "l");
-    leg->AddEntry(hEta_NLO_p, "pp #rightarrow t#bar{t} NLO (pQCD)", "l");
-    leg->AddEntry(hEta_BH4_p, "n=6, M_{D}=4 TeV, M_{BH}=8 TeV",    "l");
-    leg->AddEntry(hEta_BH6_p, "n=6, M_{D}=4 TeV, M_{BH}=9 TeV",    "l");
-    leg->AddEntry(hEta_BHX_p, "n=6, M_{D}=4 TeV, M_{BH}=10 TeV",   "l");
-
-    leg->Draw();
-   
-     c->cd();   // volta para o canvas principal
-    TLatex header;
-    header.SetNDC(true);
-    header.SetTextFont(42);
-    header.SetTextSize(0.035);
-    header.SetTextAlign(13);  // topo-esquerda
-
-    header.DrawLatex(0.02, 0.97, "FCC  #sqrt{s} = 100 TeV");
- 
-    // ===============================
-    // PAINEL 3 - pT (dσ/dpT) - NOVO: gráfico separado só para pT, usando os histos "hPt_X_p" normalizados
-    // ===============================
-    TCanvas* c2 = new TCanvas("c2", "Figura 2", 1200, 800);  // tamanho livre
-
-    c2->cd();              // entra no canvas
-    gPad->SetLogy();       // escala log
 
     if (hPt_LO_p) {
         hPt_LO_p->SetLineColor(kBlack);
         hPt_LO_p->SetLineWidth(4);
-        hPt_LO_p->Draw("HIST");
-        hPt_LO_p->GetXaxis()->SetRangeUser(0, 3500);
+
+        hPt_LO_p->GetXaxis()->SetRangeUser(0, 1200);
         hPt_LO_p->SetTitle(";p_{T} [GeV];d#sigma/dp_{T} [pb/GeV]");
         hPt_LO_p->GetXaxis()->CenterTitle(true);
         hPt_LO_p->GetYaxis()->CenterTitle(true);
         hPt_LO_p->GetYaxis()->SetTitleOffset(1.7);
+
+        hPt_LO_p->Draw("HIST");
     }
 
     if (hPt_NLO_p) {
@@ -320,24 +222,84 @@ void plot_ttbar_overlay()
     if (hPt_BH6_p) { hPt_BH6_p->SetLineColor(kGreen+2); hPt_BH6_p->SetLineStyle(4); hPt_BH6_p->SetLineWidth(4); hPt_BH6_p->Draw("HIST SAME"); }
     if (hPt_BHX_p) { hPt_BHX_p->SetLineColor(kBlue);    hPt_BHX_p->SetLineStyle(5); hPt_BHX_p->SetLineWidth(4); hPt_BHX_p->Draw("HIST SAME"); }
 
-    // BH (HIST)
-    hPt_BH4_p->SetLineColor(kRed);
-    hPt_BH4_p->SetLineStyle(3);
-    hPt_BH4_p->SetLineWidth(4);
+    
+   pad2->Modified();
+   pad2->Update();
+  
+   // Legenda centralizada no rodapé
+    padLeg->cd();
+    TLegend* leg = new TLegend(0.10,0.15,0.90,0.85);
+    leg->SetBorderSize(0);
+    leg->SetFillStyle(0);
+    leg->SetTextFont(42);
+    leg->SetNColumns(2);
+    leg->SetTextSize(0.15);
 
-    hPt_BH6_p->SetLineColor(kGreen+2);
-    hPt_BH6_p->SetLineStyle(4);
-    hPt_BH6_p->SetLineWidth(4);
+    leg->AddEntry(hPt_LO_p,  "pp #rightarrow t#bar{t} LO (pQCD)",  "l");
+    leg->AddEntry(hPt_NLO_p, "pp #rightarrow t#bar{t} NLO (pQCD)", "l");
+    leg->AddEntry(hPt_BH4_p, "n=6, M_{D}=4 TeV, M_{BH}=8 TeV",    "l");
+    leg->AddEntry(hPt_BH6_p, "n=6, M_{D}=4 TeV, M_{BH}=9 TeV",    "l");
+    leg->AddEntry(hPt_BHX_p, "n=6, M_{D}=4 TeV, M_{BH}=10 TeV",   "l");
 
-    hPt_BHX_p->SetLineColor(kBlue);
-    hPt_BHX_p->SetLineStyle(5);
-    hPt_BHX_p->SetLineWidth(4);
+    leg->Draw();
 
-    hPt_BH4_p->Draw("HIST SAME");
-    hPt_BH6_p->Draw("HIST SAME");
-    hPt_BHX_p->Draw("HIST SAME");
+    c->cd();   // volta para o canvas principal
+    TLatex header;
+    header.SetNDC(true);
+    header.SetTextFont(42);
+    header.SetTextSize(0.035);
+    header.SetTextAlign(13);  // topo-esquerda
 
-    TLegend* legPt2 = SmartLeg(hPt_LO_p, hPt_NLO_p, hPt_BH4_p, hPt_BH6_p, hPt_BHX_p);
+    header.DrawLatex(0.02, 0.97, "FCC  #sqrt{s} = 100 TeV");
+
+    // salvar
+     c->Update();
+     c->SaveAs("ttbar_overlay_2pads_legenda.png");
+     c->SaveAs("ttbar_overlay_2pads_legenda.pdf");
+ 
+    // ===============================
+    // PAINEL 3 - pT (dσ/dpT) - NOVO: gráfico separado só para pT, usando os histos "hPt_X_p" normalizados
+    // ===============================
+    TCanvas* c2 = new TCanvas("c2", "Figura 2", 1200, 800);  // tamanho livre
+
+    c2->cd();   // entra no canvas
+    gPad->SetLeftMargin(0.16);           
+    gPad->SetLogy();       // escala log
+
+    if (hPt_LO_p) {
+        hPt_LO_p->SetLineColor(kBlack);
+        hPt_LO_p->SetLineWidth(4);
+
+        hPt_LO_p->GetXaxis()->SetRangeUser(0, 3500);
+        hPt_LO_p->SetTitle(";p_{T} [GeV];d#sigma/dp_{T} [pb/GeV]");
+        hPt_LO_p->GetXaxis()->CenterTitle(true);
+        hPt_LO_p->GetYaxis()->CenterTitle(true);
+        hPt_LO_p->GetYaxis()->SetTitleOffset(1.7);
+
+        hPt_LO_p->Draw("HIST");
+    }
+
+    if (hPt_NLO_p) {
+        hPt_NLO_p->SetLineColor(kGray+1);
+        hPt_NLO_p->SetLineWidth(4);
+        hPt_NLO_p->SetLineStyle(2);
+        hPt_NLO_p->Draw("HIST SAME");
+    }
+
+    if (hPt_BH4_p) { hPt_BH4_p->SetLineColor(kRed);     hPt_BH4_p->SetLineStyle(3); hPt_BH4_p->SetLineWidth(4); hPt_BH4_p->Draw("HIST SAME"); }
+    if (hPt_BH6_p) { hPt_BH6_p->SetLineColor(kGreen+2); hPt_BH6_p->SetLineStyle(4); hPt_BH6_p->SetLineWidth(4); hPt_BH6_p->Draw("HIST SAME"); }
+    if (hPt_BHX_p) { hPt_BHX_p->SetLineColor(kBlue);    hPt_BHX_p->SetLineStyle(5); hPt_BHX_p->SetLineWidth(4); hPt_BHX_p->Draw("HIST SAME"); }
+
+
+    c2->Modified();
+    c2->Update();
+
+    TLegend* legPt2 = new TLegend(0.55, 0.65, 0.88, 0.88);
+
+    legPt2->SetBorderSize(0);
+    legPt2->SetFillStyle(0);
+    legPt2->SetTextFont(42);
+    legPt2->SetTextSize(0.03);
 
     legPt2->AddEntry(hPt_LO_p,  "pp #rightarrow t#bar{t} LO (pQCD)",  "l");
     legPt2->AddEntry(hPt_NLO_p, "pp #rightarrow t#bar{t} NLO (pQCD)", "l");
@@ -352,9 +314,7 @@ void plot_ttbar_overlay()
     c2->SaveAs("ttbar_overlay_100TeV_5M_n6_md4_mbh.pdf");
     c2->SaveAs("ttbar_overlay_100TeV_5M_n6_md4_mbh.eps");
     c2->SaveAs("ttbar_overlay_100TeV_5M_n6_md4_mbh.png");
-    c->Update();
-    c->SaveAs("ttbar_overlay_2pads_legenda.png");
-    c->SaveAs("ttbar_overlay_2pads_legenda.pdf");
+   
 
     cout << "Figuras salvas em ttbar_overlay_100TeV_5M_n6_md4_mbh.[pdf,eps,png]" << endl;
 }
