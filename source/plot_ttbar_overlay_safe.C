@@ -128,7 +128,7 @@ void plot_ttbar_overlay()
 
     // ================================================================
     // NOVO: NORMALIZA PARA σ_total (pb) 
-    // 1) normaliza usando Integral() (sem width)
+    // 1) normaliza usando *Integral(width) -> soma a largura dos bins X os conteúdos, dando a integral total em pb para eta e pt 
     // ================================================================
     if (sigmaLO  > 0) NormalizeToSigma(hEta_LO_p,  sigmaLO);
     if (sigmaNLO > 0) NormalizeToSigma(hEta_NLO_p, sigmaNLO);
@@ -152,6 +152,7 @@ void plot_ttbar_overlay()
      cout << "BH6  ";  CheckNormalization(hEta_BH6_p, sigmaBH6);
      cout << "BHX  ";  CheckNormalization(hEta_BHX_p, sigmaBHX);
      cout << "----------------------------------" << endl;
+
       cout << "\n===== CHECK NORMALIZATION: PT =====" << endl;
      cout << "LO   ";  CheckNormalization(hPt_LO_p,  sigmaLO);
      cout << "NLO  ";  CheckNormalization(hPt_NLO_p, sigmaNLO);
