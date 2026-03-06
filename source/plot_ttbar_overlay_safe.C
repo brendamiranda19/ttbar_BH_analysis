@@ -140,7 +140,25 @@ void plot_ttbar_overlay()
     if (sigmaNLO > 0) NormalizeToSigma(hPt_NLO_p, sigmaNLO);
     if (sigmaBH4 > 0) NormalizeToSigma(hPt_BH4_p, sigmaBH4);
     if (sigmaBH6 > 0) NormalizeToSigma(hPt_BH6_p, sigmaBH6);
-    if (sigmaBHX > 0) NormalizeToSigma(hPt_BHX_p, sigmaBHX);
+    if (sigmaBHX > 0) NormalizeToSigma(hPt_BHX_p, sigmaBHX);              
+
+    //==============================================================
+    // Checar a normalização
+    //==============================================================
+     cout << "\n===== CHECK NORMALIZATION: ETA =====" << endl;
+     cout << "LO   ";  CheckNormalization(hEta_LO_p,  sigmaLO);
+     cout << "NLO  ";  CheckNormalization(hEta_NLO_p, sigmaNLO);
+     cout << "BH4  ";  CheckNormalization(hEta_BH4_p, sigmaBH4);
+     cout << "BH6  ";  CheckNormalization(hEta_BH6_p, sigmaBH6);
+     cout << "BHX  ";  CheckNormalization(hEta_BHX_p, sigmaBHX);
+     cout << "----------------------------------" << endl;
+      cout << "\n===== CHECK NORMALIZATION: PT =====" << endl;
+     cout << "LO   ";  CheckNormalization(hPt_LO_p,  sigmaLO);
+     cout << "NLO  ";  CheckNormalization(hPt_NLO_p, sigmaNLO);
+     cout << "BH4  ";  CheckNormalization(hPt_BH4_p, sigmaBH4);
+     cout << "BH6  ";  CheckNormalization(hPt_BH6_p, sigmaBH6);
+     cout << "BHX  ";  CheckNormalization(hPt_BHX_p, sigmaBHX);
+     cout << "----------------------------------" << endl;  
 
     // canvas
     TCanvas* c = new TCanvas("c", "ttbar pQCD + BH", 1200, 500);
