@@ -8,22 +8,30 @@
 #include "TMath.h"
 #include "TFrame.h"
 #include <vector>
+#include <fstream>
 #include <iostream>
 #include <algorithm>
 
 using namespace std;
 
 // =====================================================================
-// NOVO: Normaliza histograma para uma seção de choque total (pb)
-//  - useWidthIntegral=false  -> usa Integral() (pb por bin)
-//  - useWidthIntegral=true   -> usa Integral("width") (pb)
+//  Normaliza histograma para uma seção de choque total (pb)
 // =====================================================================
 void NormalizeToSigma(TH1* h, double sigma_pb)
 {
     if (!h) return;
-    double I = h->Integral();
+    double I = h->Integral("width");
     if (I <= 0.0) return;
     h->Scale(sigma_pb / I);
+}
+// =====================================================================
+//  Verificação
+// =====================================================================
+void CheckNormalization(TH1* h, double sigma_pb)
+{
+    if (!h) return;
+    double I = h->Integral("width");
+    cout << "Integral (pb): " << I << " | Seção de choque total (pb): " << sigma_pb << endl;
 }
 // =====================================================================
 // MACRO PRINCIPAL
@@ -59,8 +67,8 @@ void plot_ttbar_overlay()
 
     gStyle->SetEndErrorSize(0);
     gStyle->SetLineWidth(2);
+    
     // ================================================================
-
     // >>> AJUSTE AQUI: coloque as seções de choque (pb) que você quer usar <<<
     const double sigmaLO  = 18847; // pb
     const double sigmaNLO = 28112; // pb
@@ -119,9 +127,8 @@ void plot_ttbar_overlay()
     TH1F* hPt_BHX_p = (TH1F*)hPt_BHX->Clone("hPt_BHX_p");
 
     // ================================================================
-    // NOVO: NORMALIZA PARA σ_total (pb) e depois "width"
+    // NOVO: NORMALIZA PARA σ_total (pb) 
     // 1) normaliza usando Integral() (sem width)
-    // 2) converte para densidade por unidade (width)
     // ================================================================
     if (sigmaLO  > 0) NormalizeToSigma(hEta_LO_p,  sigmaLO);
     if (sigmaNLO > 0) NormalizeToSigma(hEta_NLO_p, sigmaNLO);
