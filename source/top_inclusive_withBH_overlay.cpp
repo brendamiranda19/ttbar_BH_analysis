@@ -6,13 +6,8 @@
  * Executar: ./analyze_bb input.root output.root [cross_section_nb]
  */
 
-//PARA SEGUNDA-FEIRA 
-//INCLUIR O ETA (HIST) -10 ATÉ 10
-//ADICIONAR NO GITHUB ESSE CODIGO COM ETA E PT, PARA QUE SEJA USADO COMO BASE PARA OS PROXIMOS PLOTS DE SOBREPOSIÇÃO (ETA E PT) COM OS HISTOGRAMAS NORMALIZADOS PARA SEÇÃO DE CHOQUE TOTAL (PB) - PARA QUE SEJA USADO COMO BASE PARA OS PROXIMOS PLOTS DE SOBREPOSIÇÃO (ETA E PT) COM OS HISTOGRAMAS NORMALIZADOS PARA SEÇÃO DE CHOQUE TOTAL (PB) - PARA QUE SEJA USADO COMO BASE PARA OS PROXIMOS PLOTS DE SOBREPOSIÇÃO (ETA E PT) COM OS HISTOGRAMAS NORMALIZADOS PARA SEÇÃO DE CHOQUE TOTAL (PB) - PARA QUE SEJA USADO COMO BASE PARA OS PROXIMOS PLOTS DE SOBREPOSIÇÃO (ETA E PT) COM OS HISTOGRAMAS NORMALIZADOS PARA SEÇÃO DE CHOQUE TOTAL (PB) - PARA QUE SEJA USADO COMO BASE PARA OS PROXIMOS PLOTS DE SOBREPOSIÇÃO (ETA E PT) COM OS HISTOGRAMAS NORMALIZADOS PARA SEÇÃO DE CHOQUE TOTAL (PB) - PARA QUE SEJA USADO COMO BASE PARA OS PROXIMOS PLOTS DE SOBREPOSIÇÃO (ETA E PT) COM OS HISTOGRAMAS NORMALIZADOS PARA SEÇÃO DE CHOQUE TOTAL (PB) - PARA QUE SEJA USADO COMO BASE PARA OS PROXIMOS PLOTS DE SOBREPOSIÇÃO (ETA E PT) COM OS HISTOGRAMAS NORMALIZADOS PARA SEÇÃO DE CHOQUE TOTAL (PB) - PARA QUE SEJA USADO COMO BASE PARA OS PROXIMOS PLOTS DE SOBREPOSIÇÃO (ETA E PT) COM OS HISTOGRAMAS NORMALIZADOS PARA SEÇÃO DE CHOQUE TOTAL (PB)
-//COMENTAR CADA PARTE DO CÓDIGO PARA QUE FIQUE CLARO O QUE CADA PARTE FAZ - PARA QUE SEJA USADO COMO BASE PARA OS PROXIMOS PLOTS DE SOBREPOSIÇÃO (ETA E PT) COM OS HISTOGRAMAS NORMALIZADOS PARA SEÇÃO DE CHOQUE TOTAL (PB)
-//COMENTAR **TUDO**
 
-#include <TFile.h>                      //Classe TFile da framework do ROOT, serve para manipular arquivos .root (abrir, criar, ler, escrever)
+#include <TFile.h>                      
 #include <TH1F.h>                       //Classe TH1F da framework do ROOT, serve para criar e manipular histogramas unidimensionais de tipo float
 #include <TH2F.h>                       //Classe TH2F da framework do ROOT, serve para criar e manipular histogramas bidimensionais de tipo float
 #include <TLorentzVector.h>             //Classe TLorentzVector da framework do ROOT, serve para criar e manipular vetores de quatro componentes (px, py, pz, E) usados para representar partículas em física de altas energias
@@ -111,9 +106,10 @@ int main(int argc, char **argv)         //Função principal do programa, onde a
 
                 n_top++;                                                                             //Incrementa a variável n_top em 1 para contar o número de quarks top encontrados no evento. Cada vez que um quark top é identificado (ou seja, cada vez que a condição pdg == 6 && stat == 1 é satisfeita), a variável n_top é incrementada para refletir o número total de quarks top encontrados até o momento no evento. O valor final de n_top para cada evento será preenchido no histograma h_ntop, permitindo que o programa analise a distribuição do número de quarks top por evento
         }
-        h_ntop->Fill(n_top);                                                                         //Após o loop que percorre todas as partículas do evento, o valor final de n_top (número de quarks top encontrados no evento) é preenchido no histograma h_ntop usando a função Fill, permitindo que o programa analise a distribuição do número de quarks top por evento. Este passo é importante para construir o histograma de número de tops por evento, que complementa a análise do pT dos tops
+                                                                                 //Após o loop que percorre todas as partículas do evento, o valor final de n_top (número de quarks top encontrados no evento) é preenchido no histograma h_ntop usando a função Fill, permitindo que o programa analise a distribuição do número de quarks top por evento. Este passo é importante para construir o histograma de número de tops por evento, que complementa a análise do pT dos tops
 
          }
+         h_ntop->Fill(n_top);
 
         // Progresso 
         if (iEvent % 1000 == 0)                                                                     //A cada 1000 eventos processados, o programa exibe uma mensagem de progresso no console, mostrando o número do evento atual (iEvent), o número total de eventos (nEntries) e a porcentagem de eventos processados até o momento. Esta mensagem é útil para informar ao usuário sobre o andamento da análise, especialmente quando o número de eventos é grande e o processamento pode levar algum tempo. O uso do operador módulo (%) permite que a mensagem seja exibida apenas a cada 1000 eventos, evitando poluir o console com mensagens excessivas
