@@ -21,14 +21,16 @@ using namespace std;                  //Evita ter que escrever "std::" antes de 
 void NormalizeToSigma(TH1* h, double sigma_pb)                            //Normaliza o histograma "h" para a seção de choque total "sigma_pb" em pb    
 {
     if (!h) return;                                                      //Verifica se h é um ponteiro nulo, ou seja, se o histograma existe. Se não existir, retorna sem fazer nada
-    double I = h->Integral("width");                                    //Calcula a integral do histograma usando a opção "width", que faz a multiplicação do conteúdo de cada bin (cada bin guarda um número) X largura do bin, dando a integral total em pb para eta e pt
+    double I = h->Integral("width");                               //Calcula a integral do histograma usando a opção "width", que faz a multiplicação do conteúdo de cada bin (cada bin guarda um número) X largura do bin, dando a integral total em pb para eta e pt
     if (I <= 0.0) return;                                               //Se a integral for menor ou igual a zero, retorna sem fazer nada (para evitar divisão por zero ou normalização errada)
     h->Scale(sigma_pb / I);                                             //Escala do histograma multiplicando cada bin por sigma_pb / I, ou seja, normaliza o histograma para que a integral total seja igual a sigma_pb (a seção de choque total em pb)
+
+    cout << "Bin Central de " << h->GetName() << ": " << h->GetBinContent(h->GetMaximumBin()) << " pb" << endl;
 }
 // =====================================================================
 // MACRO PRINCIPAL
 // =====================================================================
-void plot_ttbar_overlay()                                                //função void é a função principal que será executada quando rodar o código, e é onde todo o código de leitura dos arquivos, manipulação dos histogramas e plotagem dos gráficos será escrito
+void plot_ttbar_overlay_safe()                                            //função void é a função principal que será executada quando rodar o código, e é onde todo o código de leitura dos arquivos, manipulação dos histogramas e plotagem dos gráficos será escrito
 {
     // ================================================================
     // ATLAS-LIKE CLEAN STYLE
@@ -69,8 +71,8 @@ void plot_ttbar_overlay()                                                //funç
     const double sigmaBHX = 3.16e2; // pb                               // Seção de choque total para o processo pp -> ttbar via BH com n=6, MD=4 TeV, MBH=10 TeV em pb
 
     // arquivos
-    TFile* fLO  = TFile::Open("/home/brenda_rolin/Documentos/programas/BlackMax-2.02.0/BlackMax/ttbar_BH_analysis/analysis_outputs/pqcd_LO_100tev_5M_output.root");       //entrada de dados para o processo pp -> ttbar no nível de Leading Order (LO)
-    TFile* fNLO = TFile::Open("/home/brenda_rolin/Documentos/programas/BlackMax-2.02.0/BlackMax/ttbar_BH_analysis/analysis_outputs/pqcd_NLO_100tev_5M_output.root");      //entrada de dados para o processo pp -> ttbar no nível de Next-to-Leading Order (NLO)
+    TFile* fLO  = TFile::Open("/home/brenda_rolin/Documentos/programas/BlackMax-2.02.0/BlackMax/ttbar_BH_analysis/analysis_outputs/analysis_pqcd_LO_100tev_5M.root");     //entrada de dados para o processo pp -> ttbar no nível de Leading Order (LO)
+    TFile* fNLO = TFile::Open("/home/brenda_rolin/Documentos/programas/BlackMax-2.02.0/BlackMax/ttbar_BH_analysis/analysis_outputs/analysis_pqcd_NLO_100tev_5M.root");      //entrada de dados para o processo pp -> ttbar no nível de Next-to-Leading Order (NLO)
     TFile* fBH4 = TFile::Open("/home/brenda_rolin/Documentos/programas/BlackMax-2.02.0/BlackMax/ttbar_BH_analysis/analysis_outputs/analysis_100tev_n6_md4_mbh8.root");    //entrada de dados para o processo pp -> ttbar via BH com n=6, MD=4 TeV, MBH=8 TeV
     TFile* fBH6 = TFile::Open("/home/brenda_rolin/Documentos/programas/BlackMax-2.02.0/BlackMax/ttbar_BH_analysis/analysis_outputs/analysis_100tev_n6_md4_mbh9.root");    //entrada de dados para o processo pp -> ttbar via BH com n=6, MD=4 TeV, MBH=9 TeV
     TFile* fBHX = TFile::Open("/home/brenda_rolin/Documentos/programas/BlackMax-2.02.0/BlackMax/ttbar_BH_analysis/analysis_outputs/analysis_100tev_n6_md4_mbh10.root");   //entrada de dados para o processo pp -> ttbar via BH com n=6, MD=4 TeV, MBH=10 TeV
@@ -302,7 +304,18 @@ void plot_ttbar_overlay()                                                //funç
     c2->Update();                                                    //Atualiza o canvas c2 para garantir que todas as modificações feitas, como o desenho dos histogramas, a configuração dos pads e a adição da legenda, sejam refletidas corretamente no canvas c2 antes de salvar a figura
     c2->SaveAs("ttbar_overlay_100TeV_5M_n6_md4_mbh.eps");            //Salva o canvas "c2" como um arquivo de imagem no formato EPS com o nome "ttbar_overlay_100TeV_5M_n6_md4_mbh.eps", para que a figura possa ser visualizada e compartilhada em formato de documento EPS, mantendo a qualidade vetorial da figura
     c2->SaveAs("ttbar_overlay_100TeV_5M_n6_md4_mbh.png");            //Salva o canvas "c2" como um arquivo de imagem no formato PNG com o nome "ttbar_overlay_100TeV_5M_n6_md4_mbh.png", para que a figura possa ser visualizada e compartilhada em formato de imagem
-   
 
+    cout << "\n" << string(70, '=') << endl;
+    cout << "   RELATÓRIO DE VALIDAÇÃO: SEÇÃO DE CHOQUE TOTAL (Integral vs Teoria)" << endl;
+    cout << string(70, '=') << endl;
+    
+    // Testando via Eta
+    printf("pQCD LO  | Calc: %12.2f pb | Esperado: %10.2f pb\n", hEta_LO->Integral("width"),  sigmaLO);
+    printf("pQCD NLO | Calc: %12.2f pb | Esperado: %10.2f pb\n", hEta_NLO->Integral("width"), sigmaNLO);
+    printf("BH (8TeV)| Calc: %12.2f pb | Esperado: %10.2f pb\n", hEta_BH4->Integral("width"), sigmaBH4);
+    printf("BH (9TeV)| Calc: %12.2f pb | Esperado: %10.2f pb\n", hEta_BH6->Integral("width"), sigmaBH6);
+    printf("BH (10TeV)| Calc: %12.2f pb | Esperado: %10.2f pb\n", hEta_BHX->Integral("width"), sigmaBHX);
+    
+    cout << string(70, '=') << "\n" << endl;
     cout << "Figuras salvas em ttbar_overlay_100TeV_5M_n6_md4_mbh.[eps,png]" << endl;   //Imprime no console a mensagem indicando que as figuras foram salvas com os nomes "ttbar_overlay_100TeV_5M_n6_md4_mbh.eps" e "ttbar_overlay_100TeV_5M_n6_md4_mbh.png", para informar ao usuário que as figuras foram geradas e estão disponíveis para visualização e compartilhamento
 }
