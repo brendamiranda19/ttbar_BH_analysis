@@ -10,8 +10,8 @@
 #include <TFile.h>                      
 #include <TH1F.h>                       //Classe TH1F da framework do ROOT, serve para criar e manipular histogramas unidimensionais de tipo float
 #include <TH2F.h>                       //Classe TH2F da framework do ROOT, serve para criar e manipular histogramas bidimensionais de tipo float
-#include <TLorentzVector.h>             //Classe TLorentzVector da framework do ROOT, serve para criar e manipular vetores de quatro componentes (px, py, pz, E) usados para representar partículas em física de altas energias
-#include <TTree.h>                      //Classe TTree da framework do ROOT, serve para criar e manipular árvores de dados, que são estruturas hierárquicas usadas para armazenar grandes conjuntos de dados de forma eficiente
+#include <TLorentzVector.h>             //Classe TLorentzVector da framework do ROOT, serve para criar e manipular vetores de quatro componentes (px, py, pz, E) 
+#include <TTree.h>                      //Classe TTree da framework do ROOT, serve para criar e manipular árvores de dados
 #include <algorithm>                    //Classe algorithm da biblioteca standard do C++, serve para funções de algoritmos de estrutura de dados (sort, find, copy, etc.)
 #include <cmath>                        //Classe cmath da biblioteca standard do C++, serve para funções matemáticas comuns (funções trigonométricas, exponenciais, etc.)
 #include <iostream>                     //Classe iostream da biblioteca standard do C++, serve para manipulação de entrada e saída de dados (cout, cin, etc.)
@@ -22,41 +22,41 @@
 double xs = 0.0;                        //nb isospin nPDFSet0  
 double lumi = 1.0;                      //nb-1
 
-int main(int argc, char **argv)         //Função principal do programa, onde a execução começa. Recebe os argumentos da linha de comando (argc é o número de argumentos, argv é um array de strings com os argumentos)
+int main(int argc, char **argv)         //Função principal do programa
 {
 
-    if (argc < 3)                       //Verifica se o número de argumentos é menor que 3 (o nome do programa, o arquivo de entrada e o arquivo de saída), ou seja, se os argumentos necessários não foram fornecidos. Se for o caso, exibe uma mensagem de uso e retorna 1 para indicar um erro na execução
+    if (argc < 3)                       
     {
-        std::cout << "Uso: " << argv[0] << " <input.root> <output.root> [cross_section_nb]" << std::endl;  //Exibe a mensagem de uso do programa, indicando que o programa deve ser executado com o nome do arquivo de entrada (input.root), o nome do arquivo de saída (output.root) e opcionalmente a seção de choque em nb (cross_section_nb)
-        std::cout << "  cross_section_nb: seção de choque em nb (opcional)" << std::endl;                  //Exibe uma mensagem adicional explicando que o argumento cross_section_nb é opcional e representa a seção de choque em nb, caso o usuário queira fornecer um valor diferente do padrão
-        return 1;                                                                                          //Retorna 1 para indicar que o programa terminou com um erro devido à falta de argumentos necessários
+        std::cout << "Uso: " << argv[0] << " <input.root> <output.root> [cross_section_nb]" << std::endl;  
+        std::cout << "  cross_section_nb: seção de choque em nb (opcional)" << std::endl;                  
+        return 1;                                                                                          
     }
 
-    std::string output_name = argv[2];                                                                     //Armazena o nome do arquivo de saída que foi fornecido como argumento na linha de comando (argv[2]) em uma variável do tipo string chamada output_name, que será usada posteriormente para salvar os histogramas gerados pelo programa
+    std::string output_name = argv[2];                                                                     
     
     // ==== Configuração da seção de choque ====
     // Seção de choque fornecida como argumento (opcional)
-    if (argc >= 4)                                                                                        //Verifica se o número de argumentos é maior ou igual a 4, ou seja, se o usuário forneceu um valor para a seção de choque como argumento adicional. Se for o caso, converte o valor do argumento (argv[3]) de string para float usando std::atof e armazena na variável xs. Em seguida, exibe a seção de choque fornecida pelo usuário
+    if (argc >= 4)                                                                                        
     {
-        xs = std::atof(argv[3]);                                                                         //Converte o valor do argumento argv[3] de string para float usando a função std::atof e armazena o resultado na variável xs, que representa a seção de choque em nb fornecida pelo usuário
-        std::cout << "Seção de choque fornecida: " << xs << " nb" << std::endl;                          //Exibe a seção de choque que foi fornecida pelo usuário, mostrando o valor armazenado na variável xs seguido da unidade "nb"
+        xs = std::atof(argv[3]);                                                                         
+        std::cout << "Seção de choque fornecida: " << xs << " nb" << std::endl;                          
     }
-    else                                                                                                 //Se o número de argumentos for menor que 4, ou seja, se o usuário não forneceu um valor para a seção de choque, exibe uma mensagem indicando que a seção de choque padrão será usada, mostrando o valor atual da variável xs (que é 0.0 por padrão)
+    else                                                                                                  
     {
-        std::cout << "Seção de choque padrão: " << xs << " nb" << std::endl;                             //Exibe a seção de choque padrão que será usada, mostrando o valor da variável xs (que é 0.0 por padrão) seguido da unidade "nb"
+        std::cout << "Seção de choque padrão: " << xs << " nb" << std::endl;                             
     }
     
     // Abrir arquivo de entrada
-    TFile *input_file = TFile::Open(argv[1]);                                                           //Abre o arquivo de entrada especificado pelo usuário (argv[1]) usando a função TFile::Open do ROOT, que retorna um ponteiro para um objeto TFile. O arquivo deve estar no formato .root e conter a estrutura de dados esperada para que o programa possa processá-lo corretamente. O ponteiro input_file será usado posteriormente para acessar os dados contidos no arquivo
-    if (!input_file || input_file->IsZombie())                                                          //Verifica se o arquivo foi aberto com sucesso. Se o ponteiro input_file for nulo ou se o arquivo estiver corrompido (IsZombie() retorna true), exibe uma mensagem de erro indicando que houve um problema ao abrir o arquivo e retorna 1 para indicar um erro na execução
+    TFile *input_file = TFile::Open(argv[1]);                                                           
+    if (!input_file || input_file->IsZombie())                                                         
     {
-        std::cerr << "Erro ao abrir arquivo: " << argv[1] << std::endl;                                 //Exibe mensagem de erro no fluxo de saída de erro (std::cerr) indicando que houve um problema ao abrir o arquivo especificado por argv[1], mostrando o nome do arquivo que causou o erro
+        std::cerr << "Erro ao abrir arquivo: " << argv[1] << std::endl;                                 //Exibe mensagem de erro
         return 1;                                                                                      //Retorna 1 para indicar que o programa terminou com um erro devido à falha ao abrir o arquivo de entrada
     }
 
     // Obter a árvore
-    TTree *tree = (TTree *)input_file->Get("lheTree");                                                 //Obtem a árvore de dados chamada "lheTree" do arquivo de entrada usando a função Get do ROOT, que retorna um ponteiro para um objeto TTree. A árvore deve conter os dados estruturados de acordo com o formato esperado para que o programa possa processá-los corretamente. O ponteiro tree será usado posteriormente para acessar os dados contidos na árvore
-    if (!tree)                                                                                         //Verifica se a tree foi obtida com sucesso. Se o ponteiro tree for nulo, ou seja, se a árvore "lheTree" não for encontrada no arquivo de entrada, exibe uma mensagem de erro indicando que a árvore não foi encontrada, fecha o arquivo de entrada e retorna 1 para indicar um erro na execução
+    TTree *tree = (TTree *)input_file->Get("lheTree");                                                 //Obtem a árvore de dados chamada "lheTree" do arquivo de entrada usando a função Get do ROOT, que retorna um ponteiro para um objeto TTree
+    if (!tree)                                                                                         //Verifica se a tree foi obtida com sucesso. Se o ponteiro tree for nulo
     {
         std::cerr << "Erro: árvore 'lheTree' não encontrada!" << std::endl;                            //Mensagem de erro indicando que a árvore "lheTree" não foi encontrada no arquivo de entrada, mostrando o nome da árvore que causou o erro
         input_file->Close();                                                                           //Fecha o arquivo de entrada para liberar os recursos associados a ele, garantindo que não haja vazamento de memória ou arquivos abertos desnecessariamente       
@@ -64,77 +64,84 @@ int main(int argc, char **argv)         //Função principal do programa, onde a
     }
 
     // Variáveis para leitura dos dados da árvore
-    std::vector<int> *pdgID = nullptr;                                                                 //Ponteiro para um vetor de inteiros que armazenará os códigos PDG (Particle Data Group) das partículas presentes em cada evento. O código PDG é uma convenção usada para identificar tipos específicos de partículas em física de altas energias. O ponteiro pdgID será usado para acessar os códigos PDG das partículas em cada evento durante o loop de processamento dos eventos
-    std::vector<int> *status = nullptr;                                                                //Ponteiro para um vetor de inteiros que armazenará os status das partículas presentes em cada evento. O status é uma convenção usada para indicar o estado de uma partícula (por exemplo, se é um estado final, intermediário, etc.) em física de altas energias. O ponteiro status será usado para acessar os status das partículas em cada evento durante o loop de processamento dos eventos
-    std::vector<float> *px = nullptr;                                                                  //Ponteiro para um vetor de floats que armazenará as componentes de momento px das partículas presentes em cada evento. O ponteiro px será usado para acessar as componentes de momento px das partículas em cada evento durante o loop de processamento dos eventos
-    std::vector<float> *py = nullptr;                                                                  //Ponteiro para um vetor de floats que armazenará as componentes de momento py das partículas presentes em cada evento. O ponteiro py será usado para acessar as componentes de momento py das partículas em cada evento durante o loop de processamento dos eventos    
-    std::vector<float> *pz = nullptr;                                                                  //Ponteiro para um vetor de floats que armazenará as componentes de momento pz das partículas presentes em cada evento. O ponteiro pz será usado para acessar as componentes de momento pz das partículas em cada evento durante o loop de processamento dos eventos    
-    std::vector<float> *e = nullptr;                                                                   //Ponteiro para um vetor de floats que armazenará as energias das partículas presentes em cada evento. O ponteiro e será usado para acessar as energias das partículas em cada evento durante o loop de processamento dos eventos
-    std::vector<float> *m = nullptr;                                                                   //Ponteiro para um vetor de floats que armazenará as massas das partículas presentes em cada evento. O ponteiro m será usado para acessar as massas das partículas em cada evento durante o loop de processamento dos eventos   
+    std::vector<int> *pdgID = nullptr;                                                                 //Ponteiro para um vetor de inteiros que armazenará os códigos PDG (Particle Data Group) das partículas presentes em cada evento
+    std::vector<int> *status = nullptr;                                                                //Ponteiro para um vetor de inteiros que armazenará os status das partículas presentes em cada evento
+    std::vector<float> *px = nullptr;                                                                  //Ponteiro para um vetor de floats que armazenará as componentes de momento px das partículas presentes em cada evento
+    std::vector<float> *py = nullptr;                                                                  //Ponteiro para um vetor de floats que armazenará as componentes de momento py das partículas presentes em cada evento
+    std::vector<float> *pz = nullptr;                                                                  //Ponteiro para um vetor de floats que armazenará as componentes de momento pz das partículas presentes em cada evento
+    std::vector<float> *e = nullptr;                                                                   //Ponteiro para um vetor de floats que armazenará as energias das partículas presentes em cada evento
+    std::vector<float> *m = nullptr;                                                                   //Ponteiro para um vetor de floats que armazenará as massas das partículas presentes em cada evento
 
-    tree->SetBranchAddress("pdgID", &pdgID);                                                           //Endereço das branches da árvore para ler os dados. A função SetBranchAddress do ROOT é usada para associar as variáveis do programa (pdgID, status, px, py, pz, e, m) às branches correspondentes na árvore "lheTree". Isso permite que o programa acesse os dados armazenados nessas branches durante o loop de processamento dos eventos.
-    tree->SetBranchAddress("status", &status);                                                         //Associa a variável status ao endereço da branch "status" na árvore, permitindo que o programa acesse os status das partículas em cada evento durante o loop de processamento dos eventos
-    tree->SetBranchAddress("px", &px);                                                                 //Associa a variável px ao endereço da branch "px" na árvore, permitindo que o programa acesse as componentes de momento px das partículas em cada evento durante o loop de processamento dos eventos 
-    tree->SetBranchAddress("py", &py);                                                                 //Associa a variável py ao endereço da branch "py" na árvore, permitindo que o programa acesse as componentes de momento py das partículas em cada evento durante o loop de processamento dos eventos
-    tree->SetBranchAddress("pz", &pz);                                                                 //Associa a variável pz ao endereço da branch "pz" na árvore, permitindo que o programa acesse as componentes de momento pz das partículas em cada evento durante o loop de processamento dos eventos
-    tree->SetBranchAddress("e", &e);                                                                   //Associa a variável e ao endereço da branch "e" na árvore, permitindo que o programa acesse as energias das partículas em cada evento durante o loop de processamento dos eventos
-    tree->SetBranchAddress("m", &m);                                                                   //Associa a variável m ao endereço da branch "m" na árvore, permitindo que o programa acesse as massas das partículas em cada evento durante o loop de processamento dos eventos
+    tree->SetBranchAddress("pdgID", &pdgID);                                                           //Endereço das branches da árvore para ler os dados. A função SetBranchAddress do ROOT é usada para associar as variáveis do programa (pdgID, status, px, py, pz, e, m)
+    tree->SetBranchAddress("status", &status);                                                         //Associa a variável status ao endereço da branch "status" 
+    tree->SetBranchAddress("px", &px);                                                                 //Associa a variável px ao endereço da branch "px" 
+    tree->SetBranchAddress("py", &py);                                                                 //Associa a variável py ao endereço da branch "py" 
+    tree->SetBranchAddress("pz", &pz);                                                                 //Associa a variável pz ao endereço da branch "pz" 
+    tree->SetBranchAddress("e", &e);                                                                   //Associa a variável e ao endereço da branch "e" 
+    tree->SetBranchAddress("m", &m);                                                                   //Associa a variável m ao endereço da branch "m"
+
 
     // Histogramas
-    TH1F *h_top_pt = new TH1F("h_top_pt", "pT dos tops;pT_{top} [GeV];Eventos", 100, 0, 4000);         //Cria um histograma unidimensional do tipo float chamado h_top_pt, com o título "pT dos tops", o rótulo do eixo x "pT_{top} [GeV]", o rótulo do eixo y "Eventos", 100 bins e um intervalo de 0 a 4000 GeV para o pT dos tops. Este histograma será preenchido com os valores de pT dos quarks top encontrados em cada evento durante o loop de processamento dos eventos
-    TH1F *h_ntop = new TH1F("h_ntop", "NTops;N_{top};Eventos", 10, 0, 10);                             //Cria um histograma unidimensional do tipo float chamado h_ntop, com o título "NTops", o rótulo do eixo x "N_{top}", o rótulo do eixo y "Eventos", 10 bins e um intervalo de 0 a 10 para o número de quarks top encontrados em cada evento. Este histograma será preenchido com os valores do número de quarks top encontrados em cada evento durante o loop de processamento dos eventos
-    TH1F *h_top_eta = new TH1F("h_top_eta", "Eta dos tops;#eta_{top};Eventos", 100, -10, 10);          //Cria histograma unidimensional do tipo float chamado h_top_eta, com o título "Eta dos tops", o rótulo do eixo x "#eta_{top}", o rótulo do eixo y "Eventos", 100 bins e um intervalo de -10 a 10 para o pseudorrapidez (eta) dos quarks top. Este histograma será preenchido com os valores de eta dos quarks top encontrados em cada evento durante o loop de processamento dos eventos    
-    Long64_t nEntries = tree->GetEntries();                                                              //Numero total de eventos na árvore "lheTree". A função GetEntries do ROOT retorna o número de entradas (eventos) presentes na árvore, que será usado para controlar o loop de processamento dos eventos. O valor de nEntries indica quantos eventos serão processados pelo programa, e é exibido para o usuário antes do início do loop para informar sobre a quantidade de dados que será analisada
-    std::cout << "Processando " << nEntries << " eventos..." << std::endl;                            //Mensagem informando ao usuário que o programa está começando a processar os eventos, mostrando o número total de eventos que serão analisados, que foi obtido na variável nEntries
-    TLorentzVector top;                                                                               //Cria um objeto do tipo TLorentzVector chamado top, que será usado para armazenar as componentes de momento e energia dos quarks top encontrados em cada evento durante o loop de processamento dos eventos. O TLorentzVector é uma classe do ROOT que representa um vetor de quatro componentes (px, py, pz, E) usado para representar partículas em física de altas energias. O objeto top será preenchido com os valores correspondentes às partículas identificadas como quarks top em cada evento, permitindo que o programa calcule o pT dos tops e preencha os histogramas adequadamente
+    TH1F *h_top_pt = new TH1F("h_top_pt", "pT dos tops;pT_{top} [GeV];Eventos", 100, 0, 4000);         //Cria um histograma unidimensional do tipo float chamado h_top_pt
+    TH1F *h_ntop = new TH1F("h_ntop", "NTops;N_{top};Eventos", 10, 0, 10);                             //Cria um histograma unidimensional do tipo float chamado h_ntop
+    TH1F *h_top_eta = new TH1F("h_top_eta", "Eta dos tops;#eta_{top};Eventos", 100, -10, 10); 
+    //h_top_pt_selection         //Cria histograma unidimensional do tipo float chamado h_top_eta, 
+    Long64_t nEntries = tree->GetEntries();                                                           //Numero total de eventos na árvore "lheTree"
+    std::cout << "Processando " << nEntries << " eventos..." << std::endl;                           
+    TLorentzVector top;                                                                             
 
     // Loop sobre eventos
-    for (Long64_t iEvent = 0; iEvent < nEntries; iEvent++)                                            //Inicia um loop que percorre todos os eventos na árvore "lheTree". O loop começa com iEvent igual a 0 e continua até iEvent ser menor que nEntries, ou seja, até processar todos os eventos disponíveis. Dentro do loop, o programa lerá os dados de cada evento, identificará os quarks top presentes, calculará o pT dos tops e preencherá os histogramas correspondentes. O loop é controlado pela variável iEvent, que é incrementada a cada iteração para acessar o próximo evento na árvore
+    for (Long64_t iEvent = 0; iEvent < nEntries; iEvent++)                                            
     {
-        int n_top = 0;                                                                                //Variável para contar o número de quarks top encontrados em cada evento. Esta variável é inicializada como 0 no início de cada iteração do loop, e será incrementada toda vez que um quark top for identificado durante a análise dos dados do evento. O valor final de n_top para cada evento será preenchido no histograma h_ntop, permitindo que o programa analise a distribuição do número de quarks top por evento
+        int n_top = 0;    
+        
         tree->GetEntry(iEvent);                                                                       
-        for (size_t iPart = 0; iPart < pdgID->size(); iPart++)                                        //Inicia um loop que percorre todas as partículas presentes no evento atual
+        for (size_t iPart = 0; iPart < pdgID->size(); iPart++)                                       
         {
-            int pdg = fabs(pdgID->at(iPart));                                                        //Obtém o código PDG da partícula atual (iPart) usando o vetor pdgID, e aplica a função fabs para obter o valor absoluto do código PDG. O código PDG é uma convenção usada para identificar tipos específicos de partículas em física de altas energias, e o valor absoluto é usado para tratar partículas e antipartículas de forma equivalente (por exemplo, um quark top tem código PDG 6, enquanto um antiquark top tem código PDG -6, mas ambos são considerados como tops para a análise). O valor do código PDG será usado para identificar os quarks top presentes no evento
-            int stat = status->at(iPart);                                                            //Obtém o status da partícula atual (iPart) usando o vetor status. O status é uma convenção usada para indicar o estado de uma partícula (por exemplo, se é um estado final, intermediário, etc.) em física de altas energias. O valor do status será usado para identificar os quarks top que estão em estado final (status 1), ou seja, aqueles que são considerados como partículas detectáveis no evento e que serão analisados para preencher os histogramas correspondentes
+            int pdg = fabs(pdgID->at(iPart));                                                      
+            int stat = status->at(iPart);                                                           
 
-            if (pdg == 6 && stat == 1)                                                               //Verifica se a partícula atual é um quark top (código PDG 6) e está em estado final (status 1). Se ambas as condições forem verdadeiras, significa que a partícula é um quark top detectável no evento, e o programa procederá a calcular o pT do top e preencher os histogramas correspondentes. Esta condição é crucial para identificar os quarks top relevantes para a análise, garantindo que apenas os tops em estado final sejam considerados para o preenchimento dos histogramas de pT e número de tops por evento
+            if (pdg == 6 && stat == 1)                                                               
             {
-                top.SetPxPyPzE(px->at(iPart), py->at(iPart), pz->at(iPart), e->at(iPart));           //Preenche o objeto top (do tipo TLorentzVector) com as componentes de momento (px, py, pz) e energia (E) da partícula atual (iPart) usando os vetores px, py, pz e e. A função SetPxPyPzE do TLorentzVector é usada para definir as componentes do vetor de quatro momentos, permitindo que o programa calcule o pT do top posteriormente para preencher o histograma h_top_pt. Este passo é essencial para obter as informações cinemáticas do quark top identificado, que serão usadas para a análise dos dados e a construção dos histogramas correspondentes
-                h_top_pt->Fill(top.Pt());                                                            //Calcula o pT do top usando a função Pt() do TLorentzVector, que retorna o valor do momento transverso (pT) do vetor de quatro momentos. O valor do pT do top é então preenchido no histograma h_top_pt usando a função Fill, permitindo que o programa analise a distribuição do pT dos quarks top encontrados em cada evento. Este passo é crucial para construir o histograma de pT dos tops
-                h_top_eta->Fill(top.Eta());                                                          //Calcula o pseudorrapidez (eta) do top usando a função Eta() do TLorentzVector, que retorna o valor da pseudorrapidez do vetor de quatro momentos. O valor de eta do top é então preenchido no histograma h_top_eta usando a função Fill, permitindo que o programa analise a distribuição de eta dos quarks top encontrados em cada evento. Este passo é crucial para construir o histograma de eta dos tops 
+                top.SetPxPyPzE(px->at(iPart), py->at(iPart), pz->at(iPart), e->at(iPart));           
 
-                n_top++;                                                                             //Incrementa a variável n_top em 1 para contar o número de quarks top encontrados no evento. Cada vez que um quark top é identificado (ou seja, cada vez que a condição pdg == 6 && stat == 1 é satisfeita), a variável n_top é incrementada para refletir o número total de quarks top encontrados até o momento no evento. O valor final de n_top para cada evento será preenchido no histograma h_ntop, permitindo que o programa analise a distribuição do número de quarks top por evento
+                n_top++;                                          
         }
-                                                                                 //Após o loop que percorre todas as partículas do evento, o valor final de n_top (número de quarks top encontrados no evento) é preenchido no histograma h_ntop usando a função Fill, permitindo que o programa analise a distribuição do número de quarks top por evento. Este passo é importante para construir o histograma de número de tops por evento, que complementa a análise do pT dos tops
-
          }
-         h_ntop->Fill(n_top);
+         h_ntop->Fill(n_top);                                                    
+         h_top_pt->Fill(top.Pt());                                                    
+         h_top_eta->Fill(top.Eta());   
 
+//if (top.Pt() > 1000) h_top_pt_selection ....
+      
         // Progresso 
-        if (iEvent % 1000 == 0)                                                                     //A cada 1000 eventos processados, o programa exibe uma mensagem de progresso no console, mostrando o número do evento atual (iEvent), o número total de eventos (nEntries) e a porcentagem de eventos processados até o momento. Esta mensagem é útil para informar ao usuário sobre o andamento da análise, especialmente quando o número de eventos é grande e o processamento pode levar algum tempo. O uso do operador módulo (%) permite que a mensagem seja exibida apenas a cada 1000 eventos, evitando poluir o console com mensagens excessivas
+        if (iEvent % 1000 == 0)                                                                    
         {
-            std::cout << "Processado: " << iEvent << " / " << nEntries                              //Exibe a mensagem de progresso, mostrando o número do evento atual (iEvent), o número total de eventos (nEntries) e a porcentagem de eventos processados até o momento, calculada como (100.0 * iEvent / nEntries). Esta informação é útil para acompanhar o andamento da análise, especialmente quando o número de eventos é grande e o processamento pode levar algum tempo
-                      << " (" << (100.0 * iEvent / nEntries) << "%)" << std::endl;                  //Calcula a porcentagem de eventos processados até o momento usando a fórmula (100.0 * iEvent / nEntries) e exibe essa informação na mensagem de progresso, permitindo que o usuário tenha uma ideia clara do progresso da análise em termos percentuais, além do número absoluto de eventos processados e do total de eventos disponíveis para análise
+            std::cout << "Processado: " << iEvent << " / " << nEntries                              
+                      << " (" << (100.0 * iEvent / nEntries) << "%)" << std::endl;                  
         }
     }
 
+    h_top_pt->Scale(xs/nEntries); 
+    h_top_eta->Scale(xs/nEntries);
+    //h_top_pt_selection
     // Salvar histogramas
-    TFile *output_file = new TFile(output_name.c_str(), "RECREATE");                               //Cria um novo arquivo de saída com o nome especificado em output_name (convertido para C-string usando c_str()) e o modo "RECREATE", que indica que o arquivo será criado ou sobrescrito se já existir. O ponteiro output_file será usado para salvar os histogramas gerados durante a análise, permitindo que os resultados sejam armazenados em um arquivo .root para posterior visualização e análise
+    TFile *output_file = new TFile(output_name.c_str(), "RECREATE");              
 
-    h_top_pt->Write();                                                                             //Escreve o histograma h_top_pt no arquivo de saída usando a função Write do ROOT, que salva o histograma no formato apropriado para ser acessado posteriormente. Este passo é crucial para garantir que os resultados da análise do pT dos quarks top sejam armazenados corretamente no arquivo de saída, permitindo que o usuário visualize e analise os histogramas gerados após a execução do programa
-    h_top_eta->Write();                                                                            //Escreve o histograma h_top_eta no arquivo de saída usando a função Write do ROOT, que salva o histograma no formato apropriado para ser acessado posteriormente. Este passo é crucial para garantir que os resultados da análise do eta dos quarks top sejam armazenados corretamente no arquivo de saída, permitindo que o usuário visualize e analise os histogramas gerados após a execução do programa
-    h_ntop->Write();                                                                               //Escreve o histograma h_ntop no arquivo de saída usando a função Write do ROOT, que salva o histograma no formato apropriado para ser acessado posteriormente. Este passo é crucial para garantir que os resultados da análise do número de quarks top por evento sejam armazenados corretamente no arquivo de saída, permitindo que o usuário visualize e analise os histogramas gerados após a execução do programa
+    h_top_pt->Write();                                                                             
+    h_top_eta->Write();  
+
+    h_ntop->Write();                                                                            
  
-    output_file->Close();                                                                          //Fecha o arquivo de saída para garantir que todos os dados sejam gravados corretamente e que os recursos associados ao arquivo sejam liberados. Este passo é importante para evitar vazamentos de memória e garantir a integridade dos dados salvos no arquivo .root, permitindo que o usuário acesse os histogramas gerados sem problemas após a execução do programa
+    output_file->Close();                                                                          
 
-    std::cout << "\nHistogramas salvos em: " << output_name << std::endl;                          //Exibe uma mensagem informando ao usuário que os histogramas foram salvos com sucesso, mostrando o nome do arquivo de saída onde os histogramas foram armazenados. Esta mensagem é útil para confirmar que a análise foi concluída e que os resultados estão disponíveis para visualização e análise posterior no arquivo .root especificado
-    std::cout << "Arquivo de análise salvo em: out_bbbar.txt" << std::endl;                        //Exibe uma mensagem informando ao usuário que o arquivo de análise foi salvo com sucesso, mostrando o nome do arquivo "out_bbbar.txt" onde os resultados da análise foram armazenados. Esta mensagem é útil para confirmar que a análise foi concluída e que os resultados estão disponíveis para visualização e análise posterior no arquivo de texto especificado
+    std::cout << "\nHistogramas salvos em: " << output_name << std::endl;                         
+    std::cout << "Arquivo de análise salvo em: out_bbbar.txt" << std::endl;                       
 
     // Fechar arquivo de entrada
-    input_file->Close();                                                                           //Fecha o arquivo de entrada para liberar os recursos associados a ele, garantindo que não haja vazamento de memória ou arquivos abertos desnecessariamente. Este passo é importante para garantir a integridade dos dados e a eficiência do programa, especialmente quando se trabalha com arquivos grandes ou múltiplos arquivos de entrada    
-    delete input_file;                                                                             //Libera a memória alocada para o objeto input_file, garantindo que os recursos associados a ele sejam liberados corretamente. Este passo é importante para evitar vazamentos de memória e garantir a eficiência do programa, especialmente quando se trabalha com arquivos grandes ou múltiplos arquivos de entrada
-    delete output_file;                                                                            //Libera a memória alocada para o objeto output_file, garantindo que os recursos associados a ele sejam liberados corretamente. Este passo é importante para evitar vazamentos de memória e garantir a eficiência do programa, especialmente quando se trabalha com arquivos grandes ou múltiplos arquivos de saída
+    input_file->Close();                                                                           
+    delete input_file;                                                                   
+    delete output_file;                                                                            
 
-    return 0;                                                                                      //Retorna 0 para indicar que o programa terminou com sucesso, sem erros. Este valor é convencionalmente usado para indicar uma execução bem-sucedida em programas C++, permitindo que o sistema operacional ou outros programas saibam que a análise foi concluída sem problemas
+    return 0;                                                                       
 }
