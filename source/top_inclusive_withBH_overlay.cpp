@@ -110,8 +110,8 @@ int main(int argc, char **argv)         //Função principal do programa
             
                 if (top.Pt() > 1000)
                 {
-                h_top_pt_selection->Fill(top.Pt());     
-                h_top_eta_selection->Fill(top.Eta());                                 
+                h_top_pt_selection->Fill(top.Pt());        //para pt
+                h_top_eta_selection->Fill(top.Eta());      //para eta                                  
                 }
             } 
         } //fim do loop sobre partículas em um evento
