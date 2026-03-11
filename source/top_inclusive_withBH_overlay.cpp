@@ -5,18 +5,16 @@
  * Compilar: g++ -o analyze_bb analyze_bb.cpp `root-config --cflags --libs`
  * Executar: ./analyze_bb input.root output.root [cross_section_nb]
  */
-
-
 #include <TFile.h>                      
-#include <TH1F.h>                       //Classe TH1F da framework do ROOT, serve para criar e manipular histogramas unidimensionais de tipo float
-#include <TH2F.h>                       //Classe TH2F da framework do ROOT, serve para criar e manipular histogramas bidimensionais de tipo float
-#include <TLorentzVector.h>             //Classe TLorentzVector da framework do ROOT, serve para criar e manipular vetores de quatro componentes (px, py, pz, E) 
-#include <TTree.h>                      //Classe TTree da framework do ROOT, serve para criar e manipular árvores de dados
-#include <algorithm>                    //Classe algorithm da biblioteca standard do C++, serve para funções de algoritmos de estrutura de dados (sort, find, copy, etc.)
-#include <cmath>                        //Classe cmath da biblioteca standard do C++, serve para funções matemáticas comuns (funções trigonométricas, exponenciais, etc.)
-#include <iostream>                     //Classe iostream da biblioteca standard do C++, serve para manipulação de entrada e saída de dados (cout, cin, etc.)
-#include <string>                       //Classe string da biblioteca standard do C++, serve para criar e manipular strings (cadeias de caracteres)
-#include <vector>                       //Classe vector da biblioteca standard do C++, serve para criar e manipular vetores
+#include <TH1F.h>                       
+#include <TH2F.h>                       
+#include <TLorentzVector.h>             
+#include <TTree.h>                      
+#include <algorithm>                    
+#include <cmath>                        
+#include <iostream>                     
+#include <string>                       
+#include <vector>                       
 
 // Contadores 
 double xs = 0.0;                        //nb isospin nPDFSet0  
@@ -85,7 +83,8 @@ int main(int argc, char **argv)         //Função principal do programa
     TH1F *h_top_pt = new TH1F("h_top_pt", "pT dos tops;pT_{top} [GeV];Eventos", 100, 0, 4000);         //Cria um histograma unidimensional do tipo float chamado h_top_pt
     TH1F *h_ntop = new TH1F("h_ntop", "NTops;N_{top};Eventos", 10, 0, 10);                             //Cria um histograma unidimensional do tipo float chamado h_ntop
     TH1F *h_top_eta = new TH1F("h_top_eta", "Eta dos tops;#eta_{top};Eventos", 100, -10, 10); 
-    //h_top_pt_selection         //Cria histograma unidimensional do tipo float chamado h_top_eta, 
+    TH1F *h_top_pt_selection = new TH1F("h_top_pt_selection", "pT dos tops (seleção);pT_{top} [GeV];Eventos", 100, 0, 4000); 
+    TH1F *h_top_eta_selection = new TH1F("h_top_eta_selection","eta dos tops (seleção);#eta_{top};Eventos", 100, -10, 10);
     Long64_t nEntries = tree->GetEntries();                                                           //Numero total de eventos na árvore "lheTree"
     std::cout << "Processando " << nEntries << " eventos..." << std::endl;                           
     TLorentzVector top;                                                                             
@@ -105,34 +104,41 @@ int main(int argc, char **argv)         //Função principal do programa
             {
                 top.SetPxPyPzE(px->at(iPart), py->at(iPart), pz->at(iPart), e->at(iPart));           
 
-                n_top++;                                          
-        }
-         }
-         h_ntop->Fill(n_top);                                                    
-         h_top_pt->Fill(top.Pt());                                                    
-         h_top_eta->Fill(top.Eta());   
+                n_top++;
+                h_top_pt->Fill(top.Pt());                                                                                                
+                h_top_eta->Fill(top.Eta());   
+            
+                if (top.Pt() > 1000)
+                {
+                h_top_pt_selection->Fill(top.Pt());     
+                h_top_eta_selection->Fill(top.Eta());                                 
+                }
+            } 
+        } //fim do loop sobre partículas em um evento
 
-//if (top.Pt() > 1000) h_top_pt_selection ....
-      
+        h_ntop->Fill(n_top); //multiplicidade
         // Progresso 
         if (iEvent % 1000 == 0)                                                                    
         {
             std::cout << "Processado: " << iEvent << " / " << nEntries                              
                       << " (" << (100.0 * iEvent / nEntries) << "%)" << std::endl;                  
         }
-    }
+    } //fim do loop sobre eventos
 
     h_top_pt->Scale(xs/nEntries); 
     h_top_eta->Scale(xs/nEntries);
-    //h_top_pt_selection
+    h_top_pt_selection->Scale(xs/nEntries);
+    h_top_eta_selection->Scale(xs/nEntries);
+
     // Salvar histogramas
     TFile *output_file = new TFile(output_name.c_str(), "RECREATE");              
 
     h_top_pt->Write();                                                                             
     h_top_eta->Write();  
+    h_top_pt_selection->Write();
+    h_ntop->Write();    
+    h_top_eta_selection->Write();                                                                        
 
-    h_ntop->Write();                                                                            
- 
     output_file->Close();                                                                          
 
     std::cout << "\nHistogramas salvos em: " << output_name << std::endl;                         
