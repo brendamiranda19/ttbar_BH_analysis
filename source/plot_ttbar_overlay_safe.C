@@ -71,19 +71,18 @@ void plot_ttbar_overlay_safe()                                            //funÃ
     }
 
     // histos
-    TH1F* hPt_LO  = (TH1F*)fLO ->Get("h_top_pt");                     
-    TH1F* hPt_NLO  = (TH1F*)fNLO->Get("h_top_pt");                    
-    TH1F* hPt_BH4  = (TH1F*)fBH4->Get("h_top_pt");                   
-    TH1F* hPt_BH6  = (TH1F*)fBH6->Get("h_top_pt");                  
-    TH1F* hPt_BHX  = (TH1F*)fBHX->Get("h_top_pt");                 
+    TH1F* hPt_LO  = (TH1F*)fLO ->Get("h_top_pt_selection");                     
+    TH1F* hPt_NLO  = (TH1F*)fNLO->Get("h_top_pt_selection");                    
+    TH1F* hPt_BH4  = (TH1F*)fBH4->Get("h_top_pt_selection");                   
+    TH1F* hPt_BH6  = (TH1F*)fBH6->Get("h_top_pt_selection");                  
+    TH1F* hPt_BHX  = (TH1F*)fBHX->Get("h_top_pt_selection");                 
 
 
-    TH1F* hEta_LO  = (TH1F*)fLO ->Get("h_top_eta");                
-    TH1F* hEta_NLO = (TH1F*)fNLO->Get("h_top_eta");                  
-    TH1F* hEta_BH4 = (TH1F*)fBH4->Get("h_top_eta");                  
-    TH1F* hEta_BH6 = (TH1F*)fBH6->Get("h_top_eta");                 
-    TH1F* hEta_BHX = (TH1F*)fBHX->Get("h_top_eta");                   
-
+    TH1F* hEta_LO  = (TH1F*)fLO ->Get("h_top_eta_selection");                
+    TH1F* hEta_NLO = (TH1F*)fNLO->Get("h_top_eta_selection");                  
+    TH1F* hEta_BH4 = (TH1F*)fBH4->Get("h_top_eta_selection");                  
+    TH1F* hEta_BH6 = (TH1F*)fBH6->Get("h_top_eta_selection");                 
+    TH1F* hEta_BHX = (TH1F*)fBHX->Get("h_top_eta_selection");                   
 
     
 
@@ -230,7 +229,8 @@ void plot_ttbar_overlay_safe()                                            //funÃ
         hPt_LO->SetLineColor(kBlack);                               //Define a cor da linha do histograma 
         hPt_LO->SetLineWidth(4);                                    //Define a largura da linha do histograma de pt para o processo pp -> ttbar (LO) como 4, para deixar a linha bem visÃ­vel
 
-        hPt_LO->GetXaxis()->SetRangeUser(0, 3500);                 //Define o intervalo do eixo X do histograma de pt para o processo pp -> ttbar (LO) de 0 a 3500 GeV
+        hPt_LO->GetXaxis()->SetRangeUser(1000, 3500);    
+        hPt_LO->SetMaximum(hEta_NLO->GetMaximum() * 200);             //Define o intervalo do eixo X do histograma de pt para o processo pp -> ttbar (LO) de 0 a 3500 GeV
         hPt_LO->SetTitle(";p_{T} [GeV];d#sigma/dp_{T} [pb/GeV]");  //Titulo do histograma de pt para o processo pp -> ttbar (LO)
         hPt_LO->GetXaxis()->CenterTitle(true);                     
         hPt_LO->GetYaxis()->CenterTitle(true);                  
