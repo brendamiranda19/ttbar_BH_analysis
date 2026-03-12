@@ -83,8 +83,8 @@ int main(int argc, char **argv)         //Função principal do programa
     TH1F *h_top_pt = new TH1F("h_top_pt", "pT dos tops;pT_{top} [GeV];Eventos", 100, 0, 4000);         //Cria um histograma unidimensional do tipo float chamado h_top_pt
     TH1F *h_ntop = new TH1F("h_ntop", "NTops;N_{top};Eventos", 10, 0, 10);                             //Cria um histograma unidimensional do tipo float chamado h_ntop
     TH1F *h_top_eta = new TH1F("h_top_eta", "Eta dos tops;#eta_{top};Eventos", 100, -10, 10); 
-    TH1F *h_top_pt_selection = new TH1F("h_top_pt_selection", "pT dos tops (seleção);pT_{top} [GeV];Eventos", 100, 0, 4000); 
-    TH1F *h_top_eta_selection = new TH1F("h_top_eta_selection","eta dos tops (seleção);#eta_{top};Eventos", 100, -10, 10);
+    //TH1F *h_top_pt_selection = new TH1F("h_top_pt_selection", "pT dos tops (seleção);pT_{top} [GeV];Eventos", 100, 0, 4000); 
+    //TH1F *h_top_eta_selection = new TH1F("h_top_eta_selection","eta dos tops (seleção);#eta_{top};Eventos", 100, -10, 10);
     Long64_t nEntries = tree->GetEntries();                                                           //Numero total de eventos na árvore "lheTree"
     std::cout << "Processando " << nEntries << " eventos..." << std::endl;                           
     TLorentzVector top;                                                                             
@@ -108,11 +108,11 @@ int main(int argc, char **argv)         //Função principal do programa
                 h_top_pt->Fill(top.Pt());                                                                                                
                 h_top_eta->Fill(top.Eta());   
             
-                if (top.Pt() > 1000)
-                {
-                h_top_pt_selection->Fill(top.Pt());        //para pt
-                h_top_eta_selection->Fill(top.Eta());      //para eta                                  
-                }
+                //if (top.Pt() > 1000)
+                //{
+                //h_top_pt_selection->Fill(top.Pt());        //para pt
+                //h_top_eta_selection->Fill(top.Eta());      //para eta                                  
+                //}
             } 
         } //fim do loop sobre partículas em um evento
 
@@ -127,17 +127,17 @@ int main(int argc, char **argv)         //Função principal do programa
 
     h_top_pt->Scale(xs/nEntries); 
     h_top_eta->Scale(xs/nEntries);
-    h_top_pt_selection->Scale(xs/nEntries);
-    h_top_eta_selection->Scale(xs/nEntries);
+    //h_top_pt_selection->Scale(xs/nEntries);
+    //h_top_eta_selection->Scale(xs/nEntries);
 
     // Salvar histogramas
     TFile *output_file = new TFile(output_name.c_str(), "RECREATE");              
 
     h_top_pt->Write();                                                                             
     h_top_eta->Write();  
-    h_top_pt_selection->Write();
+    //h_top_pt_selection->Write();
     h_ntop->Write();    
-    h_top_eta_selection->Write();                                                                        
+    //h_top_eta_selection->Write();                                                                        
 
     output_file->Close();                                                                          
 
