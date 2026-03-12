@@ -59,11 +59,11 @@ void plot_ttbar_overlay_safe()                                            //fun�
     const double sigmaBHX = 3.16e2; // pb                               // Seção de choque total para o processo pp -> ttbar via BH com n=6, MD=4 TeV, MBH=10 TeV em pb
 
     // arquivos
-    TFile* fLO  = TFile::Open("/home/brenda_rolin/Documentos/programas/BlackMax-2.02.0/BlackMax/ttbar_BH_analysis/analysis_outputs/without_cut/analysis_pqcd_LO_100tev_5M.root");     //entrada de dados para o processo pp -> ttbar no nível de Leading Order (LO)
-    TFile* fNLO = TFile::Open("/home/brenda_rolin/Documentos/programas/BlackMax-2.02.0/BlackMax/ttbar_BH_analysis/analysis_outputs/without_cut/analysis_pqcd_NLO_100tev_5M.root");      //entrada de dados para o processo pp -> ttbar no nível de Next-to-Leading Order (NLO)
-    TFile* fBH4 = TFile::Open("/home/brenda_rolin/Documentos/programas/BlackMax-2.02.0/BlackMax/ttbar_BH_analysis/analysis_outputs/without_cut/analysis_100tev_n6_md4_mbh8.root");    //entrada de dados para o processo pp -> ttbar via BH com n=6, MD=4 TeV, MBH=8 TeV
-    TFile* fBH6 = TFile::Open("/home/brenda_rolin/Documentos/programas/BlackMax-2.02.0/BlackMax/ttbar_BH_analysis/analysis_outputs/without_cut/analysis_100tev_n6_md4_mbh9.root");    //entrada de dados para o processo pp -> ttbar via BH com n=6, MD=4 TeV, MBH=9 TeV
-    TFile* fBHX = TFile::Open("/home/brenda_rolin/Documentos/programas/BlackMax-2.02.0/BlackMax/ttbar_BH_analysis/analysis_outputs/without_cut/analysis_100tev_n6_md4_mbh10.root");   //entrada de dados para o processo pp -> ttbar via BH com n=6, MD=4 TeV, MBH=10 TeV
+    TFile* fLO  = TFile::Open("/home/brenda_rolin/Documentos/programas/BlackMax-2.02.0/BlackMax/ttbar_BH_analysis/analysis_outputs/cut_pt1000/analysis_pqcd_LO_100tev_5M_cut_pt1000.root");     //entrada de dados para o processo pp -> ttbar no nível de Leading Order (LO)
+    TFile* fNLO = TFile::Open("/home/brenda_rolin/Documentos/programas/BlackMax-2.02.0/BlackMax/ttbar_BH_analysis/analysis_outputs/cut_pt1000/analysis_pqcd_NLO_100tev_5M_cut_pt1000.root");      //entrada de dados para o processo pp -> ttbar no nível de Next-to-Leading Order (NLO)
+    TFile* fBH4 = TFile::Open("/home/brenda_rolin/Documentos/programas/BlackMax-2.02.0/BlackMax/ttbar_BH_analysis/analysis_outputs/cut_pt1000/analysis_100tev_n6_md4_mbh8_cut_pt1000.root");    //entrada de dados para o processo pp -> ttbar via BH com n=6, MD=4 TeV, MBH=8 TeV
+    TFile* fBH6 = TFile::Open("/home/brenda_rolin/Documentos/programas/BlackMax-2.02.0/BlackMax/ttbar_BH_analysis/analysis_outputs/cut_pt1000/analysis_100tev_n6_md4_mbh9_cut_pt1000.root");    //entrada de dados para o processo pp -> ttbar via BH com n=6, MD=4 TeV, MBH=9 TeV
+    TFile* fBHX = TFile::Open("/home/brenda_rolin/Documentos/programas/BlackMax-2.02.0/BlackMax/ttbar_BH_analysis/analysis_outputs/cut_pt1000/analysis_100tev_n6_md4_mbh10_cut_pt1000.root");   //entrada de dados para o processo pp -> ttbar via BH com n=6, MD=4 TeV, MBH=10 TeV
 
     if (!fLO || !fNLO || !fBH4 || !fBH6 || !fBHX) {
         cout << "ERRO abrindo arquivos .root" << endl;                 //Verifica se os arquivos .root foram abertos corretamente, se algum deles for um ponteiro nulo, imprime uma mensagem de erro e retorna sem fazer nada
@@ -71,25 +71,25 @@ void plot_ttbar_overlay_safe()                                            //fun�
     }
 
     // histos
-    TH1F* hPt_LO  = (TH1F*)fLO ->Get("h_top_pt");                     
-    TH1F* hPt_NLO  = (TH1F*)fNLO->Get("h_top_pt");                    
-    TH1F* hPt_BH4  = (TH1F*)fBH4->Get("h_top_pt");                   
-    TH1F* hPt_BH6  = (TH1F*)fBH6->Get("h_top_pt");                  
-    TH1F* hPt_BHX  = (TH1F*)fBHX->Get("h_top_pt");                 
+    TH1F* hPt_LO  = (TH1F*)fLO ->Get("h_top_pt_selection");                     
+    TH1F* hPt_NLO  = (TH1F*)fNLO->Get("h_top_pt_selection");                    
+    TH1F* hPt_BH4  = (TH1F*)fBH4->Get("h_top_pt_selection");                   
+    TH1F* hPt_BH6  = (TH1F*)fBH6->Get("h_top_pt_selection");                  
+    TH1F* hPt_BHX  = (TH1F*)fBHX->Get("h_top_pt_selection");                 
 
 
-    TH1F* hEta_LO  = (TH1F*)fLO ->Get("h_top_eta");                
-    TH1F* hEta_NLO = (TH1F*)fNLO->Get("h_top_eta");                  
-    TH1F* hEta_BH4 = (TH1F*)fBH4->Get("h_top_eta");                  
-    TH1F* hEta_BH6 = (TH1F*)fBH6->Get("h_top_eta");                 
-    TH1F* hEta_BHX = (TH1F*)fBHX->Get("h_top_eta");      
+    TH1F* hEta_LO  = (TH1F*)fLO ->Get("h_top_eta_selection");                
+    TH1F* hEta_NLO = (TH1F*)fNLO->Get("h_top_eta_selection");                  
+    TH1F* hEta_BH4 = (TH1F*)fBH4->Get("h_top_eta_selection");                  
+    TH1F* hEta_BH6 = (TH1F*)fBH6->Get("h_top_eta_selection");                 
+    TH1F* hEta_BHX = (TH1F*)fBHX->Get("h_top_eta_selection");      
     
     // aumenta a largura dos bins de Pt
-    hPt_LO->Rebin(4);
-    hPt_NLO->Rebin(4);
-    hPt_BH4->Rebin(4);
-    hPt_BH6->Rebin(4);
-    hPt_BHX->Rebin(4);
+    hPt_LO->Rebin(2);
+    hPt_NLO->Rebin(2);
+    hPt_BH4->Rebin(2);
+    hPt_BH6->Rebin(2);
+    hPt_BHX->Rebin(2);
 
     if (!hEta_LO || !hPt_LO || !hEta_NLO || !hPt_NLO ||
         !hEta_BH4 || !hPt_BH4 || !hEta_BH6 || !hPt_BH6 ||             //Verifica se os histogramas de eta e pt foram obtidos corretamente dos arquivos .root, se algum deles for um ponteiro nulo, imprime uma mensagem de erro e retorna sem fazer nada
@@ -234,7 +234,7 @@ void plot_ttbar_overlay_safe()                                            //fun�
         hPt_LO->SetLineColor(kBlack);                               //Define a cor da linha do histograma 
         hPt_LO->SetLineWidth(4);                                    //Define a largura da linha do histograma de pt para o processo pp -> ttbar (LO) como 4, para deixar a linha bem visível
 
-        hPt_LO->GetXaxis()->SetRangeUser(1000, 3500);    
+        hPt_LO->GetXaxis()->SetRangeUser(800, 3500);    
         hPt_LO->SetMaximum(hEta_NLO->GetMaximum() * 200);             //Define o intervalo do eixo X do histograma de pt para o processo pp -> ttbar (LO) de 0 a 3500 GeV
         hPt_LO->SetTitle(";p_{T} [GeV];d#sigma/dp_{T} [pb/GeV]");  //Titulo do histograma de pt para o processo pp -> ttbar (LO)
         hPt_LO->GetXaxis()->CenterTitle(true);                     
