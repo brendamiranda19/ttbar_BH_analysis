@@ -59,11 +59,11 @@ void plot_ttbar_overlay_safe()                                            //fun�
     const double sigmaBHX = 3.16e2; // pb                               // Seção de choque total para o processo pp -> ttbar via BH com n=6, MD=4 TeV, MBH=10 TeV em pb
 
     // arquivos
-    TFile* fLO  = TFile::Open("/home/brenda_rolin/Documentos/programas/BlackMax-2.02.0/BlackMax/ttbar_BH_analysis/analysis_outputs/without_cut/analysis_pqcd_LO_100tev_5M.root");     //entrada de dados para o processo pp -> ttbar no nível de Leading Order (LO)
-    TFile* fNLO = TFile::Open("/home/brenda_rolin/Documentos/programas/BlackMax-2.02.0/BlackMax/ttbar_BH_analysis/analysis_outputs/without_cut/analysis_pqcd_NLO_100tev_5M.root");      //entrada de dados para o processo pp -> ttbar no nível de Next-to-Leading Order (NLO)
-    TFile* fBH4 = TFile::Open("/home/brenda_rolin/Documentos/programas/BlackMax-2.02.0/BlackMax/ttbar_BH_analysis/analysis_outputs/without_cut/analysis_100tev_n6_md4_mbh8.root");    //entrada de dados para o processo pp -> ttbar via BH com n=6, MD=4 TeV, MBH=8 TeV
-    TFile* fBH6 = TFile::Open("/home/brenda_rolin/Documentos/programas/BlackMax-2.02.0/BlackMax/ttbar_BH_analysis/analysis_outputs/without_cut/analysis_100tev_n6_md4_mbh9.root");    //entrada de dados para o processo pp -> ttbar via BH com n=6, MD=4 TeV, MBH=9 TeV
-    TFile* fBHX = TFile::Open("/home/brenda_rolin/Documentos/programas/BlackMax-2.02.0/BlackMax/ttbar_BH_analysis/analysis_outputs/without_cut/analysis_100tev_n6_md4_mbh10.root");   //entrada de dados para o processo pp -> ttbar via BH com n=6, MD=4 TeV, MBH=10 TeV
+    TFile* fLO  = TFile::Open("/home/brenda_rolin/Documentos/programas/BlackMax-2.02.0/BlackMax/ttbar_BH_analysis/analysis_outputs/cut_pt1000/analysis_pqcd_LO_100tev_5M_cut_pt1000.root");     //entrada de dados para o processo pp -> ttbar no nível de Leading Order (LO)
+    TFile* fNLO = TFile::Open("/home/brenda_rolin/Documentos/programas/BlackMax-2.02.0/BlackMax/ttbar_BH_analysis/analysis_outputs/cut_pt1000/analysis_pqcd_NLO_100tev_5M_cut_pt1000.root");      //entrada de dados para o processo pp -> ttbar no nível de Next-to-Leading Order (NLO)
+    TFile* fBH4 = TFile::Open("/home/brenda_rolin/Documentos/programas/BlackMax-2.02.0/BlackMax/ttbar_BH_analysis/analysis_outputs/cut_pt1000/analysis_100tev_n6_md4_mbh8_cut_pt1000.root");    //entrada de dados para o processo pp -> ttbar via BH com n=6, MD=4 TeV, MBH=8 TeV
+    TFile* fBH6 = TFile::Open("/home/brenda_rolin/Documentos/programas/BlackMax-2.02.0/BlackMax/ttbar_BH_analysis/analysis_outputs/cut_pt1000/analysis_100tev_n6_md4_mbh9_cut_pt1000.root");    //entrada de dados para o processo pp -> ttbar via BH com n=6, MD=4 TeV, MBH=9 TeV
+    TFile* fBHX = TFile::Open("/home/brenda_rolin/Documentos/programas/BlackMax-2.02.0/BlackMax/ttbar_BH_analysis/analysis_outputs/cut_pt1000/analysis_100tev_n6_md4_mbh10_cut_pt1000.root");   //entrada de dados para o processo pp -> ttbar via BH com n=6, MD=4 TeV, MBH=10 TeV
 
     if (!fLO || !fNLO || !fBH4 || !fBH6 || !fBHX) {
         cout << "ERRO abrindo arquivos .root" << endl;                 //Verifica se os arquivos .root foram abertos corretamente, se algum deles for um ponteiro nulo, imprime uma mensagem de erro e retorna sem fazer nada
@@ -234,7 +234,7 @@ void plot_ttbar_overlay_safe()                                            //fun�
         hPt_LO->SetLineColor(kBlack);                               //Define a cor da linha do histograma 
         hPt_LO->SetLineWidth(4);                                    //Define a largura da linha do histograma de pt para o processo pp -> ttbar (LO) como 4, para deixar a linha bem visível
 
-        hPt_LO->GetXaxis()->SetRangeUser(0, 3500);    
+        hPt_LO->GetXaxis()->SetRangeUser(800, 3500);    
         hPt_LO->SetMaximum(hEta_NLO->GetMaximum() * 200);             //Define o intervalo do eixo X do histograma de pt para o processo pp -> ttbar (LO) de 0 a 3500 GeV
         hPt_LO->SetTitle(";p_{T} [GeV];d#sigma/dp_{T} [pb/GeV]");  //Titulo do histograma de pt para o processo pp -> ttbar (LO)
         hPt_LO->GetXaxis()->CenterTitle(true);                     
