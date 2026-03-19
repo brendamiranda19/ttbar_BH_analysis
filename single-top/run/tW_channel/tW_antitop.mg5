@@ -1,0 +1,15 @@
+import model sm
+define p = g u c d s u~ c~ d~ s~ b b~
+
+generate p p > t~ w+
+
+output /home/brenda_rolin/Documentos/programas/MG5_aMC_v2.9.22/MG5_aMC_v2_9_22/processes/single-top/processes/tW_antitop_LO
+
+launch
+
+set nb_core 16
+set run_card ebeam1 50000
+set run_card ebeam2 50000
+set run_card nevents 100000
+
+done
