@@ -17,7 +17,12 @@ cmake_install.cmake
 Makefile
 *.cmake
 
+# Imagens
+*.png
+
+
 # Arquivos ROOT grandes (dados)
+*.lhe
 *.root
 input_root/*.root
 input_lhe/*.lhe
