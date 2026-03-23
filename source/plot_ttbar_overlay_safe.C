@@ -60,20 +60,22 @@ void plot_ttbar_overlay_safe()                                            //funÃ
     const double sigmaBHX = 3.16e2; // pb                               // SeÃ§Ã£o de choque total para o processo pp -> ttbar via BH com n=6, MD=4 TeV, MBH=10 TeV em pb
 
     // arquivos
-    TFile* ftW  = TFile::Open("/home/brenda_rolin/Documentos/programas/BlackMax-2.02.0/BlackMax/ttbar_BH_analysis/analysis_outputs/without_cut/analysis_tw.root"); 
+    TFile* ftW_antitop = TFile::Open("/home/brenda_rolin/Documentos/programas/BlackMax-2.02.0/BlackMax/ttbar_BH_analysis/source/analysis_single_top_tWchannel_antitop.root");
+    TFile* ftW_top = TFile::Open("/home/brenda_rolin/Documentos/programas/BlackMax-2.02.0/BlackMax/ttbar_BH_analysis/source/analysis_single_top_tWchannel_top.root");
     //TFile* fLO  = TFile::Open("/home/brenda_rolin/Documentos/programas/BlackMax-2.02.0/BlackMax/ttbar_BH_analysis/analysis_outputs/without_cut/analysis_pqcd_LO_100tev_5M.root");     //entrada de dados para o processo pp -> ttbar no nÃ­vel de Leading Order (LO)
     TFile* fNLO = TFile::Open("/home/brenda_rolin/Documentos/programas/BlackMax-2.02.0/BlackMax/ttbar_BH_analysis/analysis_outputs/without_cut/analysis_pqcd_NLO_100tev_5M.root");      //entrada de dados para o processo pp -> ttbar no nÃ­vel de Next-to-Leading Order (NLO)
     TFile* fBH4 = TFile::Open("/home/brenda_rolin/Documentos/programas/BlackMax-2.02.0/BlackMax/ttbar_BH_analysis/analysis_outputs/without_cut/analysis_100tev_n6_md4_mbh8.root");    //entrada de dados para o processo pp -> ttbar via BH com n=6, MD=4 TeV, MBH=8 TeV
     TFile* fBH6 = TFile::Open("/home/brenda_rolin/Documentos/programas/BlackMax-2.02.0/BlackMax/ttbar_BH_analysis/analysis_outputs/without_cut/analysis_100tev_n6_md4_mbh9.root");    //entrada de dados para o processo pp -> ttbar via BH com n=6, MD=4 TeV, MBH=9 TeV
     TFile* fBHX = TFile::Open("/home/brenda_rolin/Documentos/programas/BlackMax-2.02.0/BlackMax/ttbar_BH_analysis/analysis_outputs/without_cut/analysis_100tev_n6_md4_mbh10.root");   //entrada de dados para o processo pp -> ttbar via BH com n=6, MD=4 TeV, MBH=10 TeV
 
-    if (!ftW || !fNLO || !fBH4 || !fBH6 || !fBHX) {                    // Add fLO se usar o arquivo de LO
+    if (!ftW_antitop || !ftW_top || !fNLO || !fBH4 || !fBH6 || !fBHX) {                    // Add fLO se usar o arquivo de LO
         cout << "ERRO abrindo arquivos .root" << endl;                 //Verifica se os arquivos .root foram abertos corretamente, se algum deles for um ponteiro nulo, imprime uma mensagem de erro e retorna sem fazer nada
         return;
     }
 
     // histos
-    TH1F* hPt_tW  = (TH1F*)ftW->Get("h_top_pt"); 
+    TH1F* hPt_tW_antitop  = (TH1F*)ftW_antitop->Get("h_top_pt"); 
+    TH1F* hPt_tW_top  = (TH1F*)ftW_top->Get("h_top_pt"); 
     //TH1F* hPt_LO  = (TH1F*)fLO ->Get("h_top_pt");                     
     TH1F* hPt_NLO  = (TH1F*)fNLO->Get("h_top_pt");                    
     TH1F* hPt_BH4  = (TH1F*)fBH4->Get("h_top_pt");                   
@@ -81,7 +83,8 @@ void plot_ttbar_overlay_safe()                                            //funÃ
     TH1F* hPt_BHX  = (TH1F*)fBHX->Get("h_top_pt");                 
 
 
-    TH1F* hEta_tW  = (TH1F*)ftW->Get("h_top_eta");   
+    TH1F* hEta_tW_antitop  = (TH1F*)ftW_antitop->Get("h_top_eta");   
+    TH1F* hEta_tW_top  = (TH1F*)ftW_top->Get("h_top_eta");
     //TH1F* hEta_LO  = (TH1F*)fLO ->Get("h_top_eta");             
     TH1F* hEta_NLO = (TH1F*)fNLO->Get("h_top_eta");                  
     TH1F* hEta_BH4 = (TH1F*)fBH4->Get("h_top_eta");                  
@@ -89,7 +92,8 @@ void plot_ttbar_overlay_safe()                                            //funÃ
     TH1F* hEta_BHX = (TH1F*)fBHX->Get("h_top_eta");      
     
     // aumenta a largura dos bins de Pt
-    hPt_tW->Rebin(2);
+    hPt_tW_antitop->Rebin(2);
+    hPt_tW_top->Rebin(2);
     //hPt_LO->Rebin(2);
     hPt_NLO->Rebin(2);
     hPt_BH4->Rebin(2);
@@ -97,13 +101,13 @@ void plot_ttbar_overlay_safe()                                            //funÃ
     hPt_BHX->Rebin(2);
 
     //Soma as curvas ttbar NLO e tW LO para obter a curva total de ttbar para comparar com as curvas de BH
-    TH1F* hPt_ttbar_tW  = (TH1F*)hPt_NLO->Clone("hPt_ttbar_tW");
-    hPt_ttbar_tW->Add(hPt_tW);
+    //TH1F* hPt_ttbar_tW  = (TH1F*)hPt_NLO->Clone("hPt_ttbar_tW");
+    //hPt_ttbar_tW->Add(hPt_tW);
 
-    TH1F* hEta_ttbar_tW = (TH1F*)hEta_NLO->Clone("hEta_ttbar_tW");
-    hEta_ttbar_tW->Add(hEta_tW);
+    //TH1F* hEta_ttbar_tW = (TH1F*)hEta_NLO->Clone("hEta_ttbar_tW");
+    //hEta_ttbar_tW->Add(hEta_tW);
 
-    if (!hEta_tW || !hPt_tW || !hEta_NLO || !hPt_NLO ||
+    if (!hEta_tW_antitop || !hPt_tW_antitop || hEta_tW_top || !hPt_tW_top || !hEta_NLO || !hPt_NLO ||
         !hEta_BH4 || !hPt_BH4 || !hEta_BH6 || !hPt_BH6 ||             //Verifica se os histogramas de eta e pt foram obtidos corretamente dos arquivos .root, se algum deles for um ponteiro nulo, imprime uma mensagem de erro e retorna sem fazer nada
         !hEta_BHX || !hPt_BHX) {
         cout << "ERRO: algum histograma 'eta' ou 'pt' nao foi encontrado." << endl;
@@ -125,45 +129,51 @@ void plot_ttbar_overlay_safe()                                            //funÃ
     //hEta_LO->SetLineWidth(4);     
     //}
 
-    //if (hEta_NLO) {
-    //hEta_NLO->Draw("HIST SAME");
-    //hEta_NLO->SetLineColor(kGray+1);                                 
-    //hEta_NLO->SetLineStyle(2);                                   
-    //hEta_NLO->SetLineWidth(4);  
-    //}
+    if (hEta_NLO) {
+        hEta_NLO->Draw("HIST");
+        hEta_NLO->SetLineColor(kBlack);                                 
+        hEta_NLO->SetLineStyle(2);                                   
+        hEta_NLO->SetLineWidth(4);  
+    }
 
-    if (hEta_ttbar_tW) {
-    hEta_ttbar_tW->SetTitle("Pseudorrapidez do Top; #eta; d#sigma/d#eta [pb]");
-    hEta_ttbar_tW->Draw("HIST");
-    hEta_ttbar_tW->SetLineColor(kBlack);                                   
-    hEta_ttbar_tW->SetLineWidth(4);     
+    if (hEta_tW_antitop) {
+        hEta_tW_antitop->SetTitle("Pseudorrapidez do Top; #eta; d#sigma/d#eta [pb]");
+        hEta_tW_antitop->Draw("HIST SAME");
+        hEta_tW_antitop->SetLineColor(kGray+1);                                   
+        hEta_tW_antitop->SetLineWidth(4);     
+    }
+
+    if (hEta_tW_top) {
+        hEta_tW_top->Draw("HIST SAME");
+        hEta_tW_top->SetLineColor(kGray+2);                                   
+        hEta_tW_top->SetLineWidth(4);     
     }
 
     if (hEta_BH4) { 
-    hEta_BH4->Draw("HIST SAME");
-    hEta_BH4->SetLineColor(kRed);                                    
-    hEta_BH4->SetLineStyle(3);                                      
-    hEta_BH4->SetLineWidth(4);  
+        hEta_BH4->Draw("HIST SAME");
+        hEta_BH4->SetLineColor(kRed);                                    
+        hEta_BH4->SetLineStyle(3);                                      
+        hEta_BH4->SetLineWidth(4);  
     }
 
     if (hEta_BH6) {
-    hEta_BH6->Draw("HIST SAME");
-    hEta_BH6->SetLineColor(kGreen+2);                               
-    hEta_BH6->SetLineStyle(4);                                       
-    hEta_BH6->SetLineWidth(4); 
+        hEta_BH6->Draw("HIST SAME");
+        hEta_BH6->SetLineColor(kGreen+2);                               
+        hEta_BH6->SetLineStyle(4);                                       
+        hEta_BH6->SetLineWidth(4); 
     }
 
     if (hEta_BHX) {
-    hEta_BHX->Draw("HIST SAME");
-    hEta_BHX->SetLineColor(kBlue);                                   
-    hEta_BHX->SetLineStyle(5);                                      
-    hEta_BHX->SetLineWidth(4);
+        hEta_BHX->Draw("HIST SAME");
+        hEta_BHX->SetLineColor(kBlue);                                   
+        hEta_BHX->SetLineStyle(5);                                      
+        hEta_BHX->SetLineWidth(4);
     }
 
-    hEta_ttbar_tW->SetMaximum(hEta_NLO->GetMaximum() * 500);
-    hEta_ttbar_tW->SetTitle(";#eta;d#sigma/d#eta [pb]");                   
-    hEta_ttbar_tW->GetXaxis()->CenterTitle(true);                         
-    hEta_ttbar_tW->GetYaxis()->CenterTitle(true);   
+    hEta_NLO->SetMaximum(hEta_NLO->GetMaximum() * 500);
+    hEta_NLO->SetTitle(";#eta;d#sigma/d#eta [pb]");                   
+    hEta_NLO->GetXaxis()->CenterTitle(true);                         
+    hEta_NLO->GetYaxis()->CenterTitle(true);   
     
     c1->Modified();
     c1->Update();
@@ -176,8 +186,9 @@ void plot_ttbar_overlay_safe()                                            //funÃ
     legPt1->SetTextSize(0.03);            
 
     //legPt1->AddEntry(hEta_LO,  "pp #rightarrow t#bar{t} LO (pQCD)",  "l"); 
-    //legPt1->AddEntry(hEta_NLO, "pp #rightarrow t#bar{t} NLO (pQCD)", "l");
-    legPt1->AddEntry(hEta_ttbar_tW, "pp #rightarrow t#bar{t}+tW (pQCD)", "l"); 
+    legPt1->AddEntry(hEta_NLO, "pp #rightarrow t#bar{t} NLO (pQCD)", "l");
+    legPt1->AddEntry(hEta_tW_antitop, "pp #rightarrow bar{t}W (pQCD)", "l"); 
+    legPt1->AddEntry(hEta_tW_top, "pp #rightarrow tW  (pQCD)", "l"); 
     legPt1->AddEntry(hEta_BH4, "n=6, M_{D}=4 TeV, M_{BH}=8 TeV",     "l"); 
     legPt1->AddEntry(hEta_BH6, "n=6, M_{D}=4 TeV, M_{BH}=9 TeV",     "l"); 
     legPt1->AddEntry(hEta_BHX, "n=6, M_{D}=4 TeV, M_{BH}=10 TeV",    "l");
