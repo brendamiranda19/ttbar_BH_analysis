@@ -23,16 +23,15 @@ double xs = 0.0;                        //nb isospin nPDFSet0
 double lumi = 1.0;                      //nb-1
 
 int main(int argc, char **argv)         //Função principal do programa
-{
-
-    if (argc < 3)                       
+{   
+    if (argc < 3)
     {
-        std::cout << "Uso: " << argv[0] << " <input.root> <output.root> [cross_section_nb]" << std::endl;  
-        std::cout << "  cross_section_nb: seção de choque em nb (opcional)" << std::endl;                  
-        return 1;                                                                                          
+        std::cout << "Uso: " << argv[0] << " <input.root> <output.root> [cross_section_nb]" << std::endl;
+        std::cout << "  cross_section_nb: seção de choque em nb (opcional)" << std::endl;
+        return 1;                                                                
     }
 
-    std::string output_name = argv[2];                                                                     
+    std::string output_name = argv[2];                                           
     
     // ==== Configuração da seção de choque ====
     // Seção de choque fornecida como argumento (opcional)
